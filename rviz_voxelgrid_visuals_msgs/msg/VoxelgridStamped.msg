@@ -14,3 +14,6 @@ geometry_msgs/Point origin
 # 0.33... <= x <  0.66... --> 0.5
 # 0.66... <= x <= 1.0     --> 1
 std_msgs/Float32MultiArray occupancy
+
+std_msgs/ColorRGBA color
+bool has_color

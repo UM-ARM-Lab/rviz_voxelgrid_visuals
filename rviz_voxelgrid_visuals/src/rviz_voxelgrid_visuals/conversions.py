@@ -11,12 +11,14 @@ import numpy as np
 
 def vox_to_float_array(voxel_grid, dim=None):
     if dim is None:
-        dim = voxel_grid.shape[0]
+        x_dim, y_dim, z_dim = voxel_grid.shape
+    else:
+        x_dim, y_dim, z_dim = dim
     out_msg = Float32MultiArray()
     out_msg.data = voxel_grid.astype(np.float32).flatten().tolist()
-    out_msg.layout.dim.append(MultiArrayDimension(label='x', size=dim, stride=dim * dim))
-    out_msg.layout.dim.append(MultiArrayDimension(label='y', size=dim, stride=dim))
-    out_msg.layout.dim.append(MultiArrayDimension(label='z', size=dim, stride=1))
+    out_msg.layout.dim.append(MultiArrayDimension(label='x', size=x_dim, stride=y_dim * z_dim))
+    out_msg.layout.dim.append(MultiArrayDimension(label='y', size=y_dim, stride=z_dim))
+    out_msg.layout.dim.append(MultiArrayDimension(label='z', size=z_dim, stride=1))
     return out_msg
 
 

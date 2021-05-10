@@ -1,11 +1,14 @@
 #!/usr/bin/env python
-import rospy
+import pickle
+
 import numpy as np
-from rviz_voxelgrid_visuals import conversions
+import rospkg
+import rospy
 from rviz_voxelgrid_visuals_msgs.msg import VoxelgridStamped
 from sensor_msgs.msg import PointCloud2
-import pickle
-import rospkg
+from std_msgs.msg import ColorRGBA
+
+from rviz_voxelgrid_visuals import conversions
 
 """
 This is an example showing how to use the voxelgrid publisher
@@ -37,8 +40,8 @@ if __name__ == "__main__":
     mug_path = rospkg.RosPack().get_path('rviz_voxelgrid_visuals') + '/examples/mug_voxelgrid.pkl'
     with open(mug_path, 'rb') as f:
         vg_2 = pickle.load(f, encoding='latin1')
-    pub_2.publish(conversions.vox_to_voxelgrid_stamped(vg_2, scale=0.02, frame_id='world',
-                                                       origin=(-.64, -.64, 0)))
+    vg_msg_2 = conversions.vox_to_voxelgrid_stamped(vg_2, scale=0.02, frame_id='world', origin=(-.64, -.64, 0))
+    pub_2.publish(vg_msg_2)
 
     point_pub.publish(conversions.vox_to_pointcloud2_msg(vg_2, scale=0.02, frame='world', origin=(-.64, -.64, 0),
                                                          density_factor=2))
@@ -49,3 +52,10 @@ if __name__ == "__main__":
                                                        scale=0.01,  # Each voxel is a 1cm cube
                                                        frame_id='world',  # In frame "world", same as rviz fixed frame
                                                        origin=[-32 * 0.01] * 3))
+
+    # Setting the color via code
+    vg_msg_2.has_color = True
+    vg_msg_2.origin.x += 0.5
+    vg_msg_2.color = ColorRGBA(r=1, g=0, b=0, a=1)
+    pub_1.publish(vg_msg_2)
+    rospy.sleep(1)
